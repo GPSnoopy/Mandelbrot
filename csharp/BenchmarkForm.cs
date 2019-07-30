@@ -43,6 +43,21 @@ namespace Mandelbrot
             _closeButton.Enabled = false;
         }
 
+        /// <summary>
+        /// Clean up any resources being used.
+        /// </summary>
+        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                _set.Dispose();
+                components?.Dispose();
+            }
+
+            base.Dispose(disposing);
+        }
+
         protected override void OnFormClosing(FormClosingEventArgs e)
         {
             base.OnFormClosing(e);

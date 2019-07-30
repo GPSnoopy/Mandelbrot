@@ -11,7 +11,7 @@ namespace Mandelbrot
         {
             _lock = new object();
             _cancel = new bool[1];
-            //_cuda = new MandelbrotSetAlea();
+            _cuda = new ImplCuda();
             _exceptions = new List<Exception>();
 
             BackEnd = BackEnd.Managed;
@@ -27,7 +27,7 @@ namespace Mandelbrot
 
         public void Dispose()
         {
-            //_cuda?.Dispose();
+            _cuda?.Dispose();
         }
 
         public BackEnd BackEnd { get; set; }
@@ -133,7 +133,7 @@ namespace Mandelbrot
                         break;
 
                     case BackEnd.Cuda:
-                        ComputeSetCuda(startScanline, increment);
+                        ComputeSetCuda();
                         break;
                 }
             }
@@ -171,20 +171,14 @@ namespace Mandelbrot
                 ImplAvx.ComputeDouble(Iterations, startScanline, increment, OffsetX, OffsetY, Zoom, MaxIterations, ref _cancel[0]);
         }
 
-        private unsafe void ComputeSetCuda(int startScanline, int increment)
+        private void ComputeSetCuda()
         {
-            if (startScanline != 0) throw new ArgumentException("startScanline must be equal to zero");
-            if (increment != 1) throw new ArgumentException("increment must be equal to one");
-
-            fixed (uint* ptr = Iterations)
-            {
-                //_cuda.ComputeMandelbrotSet(ptr, Width, Height, OffsetX, OffsetY, Zoom, MaxIterations, startScanline, increment, Precision == Precision.Double, ref _cancel[0]);
-            }
+            _cuda.ComputeMandelbrotSet(Iterations, Width, Height, OffsetX, OffsetY, Zoom, MaxIterations, Precision == Precision.Double, ref _cancel[0]);
         }
 
         private readonly object _lock;
         private readonly bool[] _cancel;
-        //private readonly MandelbrotSetAlea _cuda;
+        private readonly ImplCuda _cuda;
         private readonly List<Exception> _exceptions;
         private Thread[] _workerThreads;
         private int _threads;

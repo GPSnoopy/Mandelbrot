@@ -6,9 +6,8 @@ Implementation of the Mandelbrot set using C#. Used as a sandbox to play with:
 - Multithreading
 - SSE intrinsics
 - AVX intrinsics
-- CUDA
+- CUDA via ILGPU
 
 ## TODOs
 
-- Plug back CUDA support when Alea supports .NET Core
 - 4K/8K Screenshot capabilities
