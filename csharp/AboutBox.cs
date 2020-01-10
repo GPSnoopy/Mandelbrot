@@ -71,7 +71,7 @@ namespace Mandelbrot
 
             try
             {
-                //Alea.Device.Default.Print();
+                Alea.Device.Default.Print();
                 return writer.ToString();
             }
 
