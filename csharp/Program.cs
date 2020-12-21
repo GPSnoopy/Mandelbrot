@@ -15,6 +15,7 @@ namespace Mandelbrot
             Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
             AppDomain.CurrentDomain.UnhandledException += (s, e) => HandleException(e.ExceptionObject, "unhandled domain exception");
 
+            Application.SetHighDpiMode(HighDpiMode.SystemAware); 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 

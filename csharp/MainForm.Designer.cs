@@ -241,7 +241,7 @@
             this.ClientSize = new System.Drawing.Size(802, 653);
             this.Controls.Add(this.tableLayoutPanel1);
             this.KeyPreview = true;
-            this.MinimumSize = new System.Drawing.Size(820, 700);
+            this.MinimumSize = new System.Drawing.Size(960, 700);
             this.Name = "MainForm";
             this.Text = "Mandelbrot";
             this.tableLayoutPanel1.ResumeLayout(false);

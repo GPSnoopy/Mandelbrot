@@ -55,15 +55,16 @@ namespace Mandelbrot
                     break;
                 }
 
-                var lp = new GroupedIndex2(
-                    new Index2(gridX, Math.Min(gridY, maxBlocksY)),
-                    new Index2(blockSizeX, blockSizeY));
+                var lp = ((gridX, Math.Min(gridY, maxBlocksY)), (blockSizeX, blockSizeY));
 
-                var kernel = _gpu.LoadStreamKernel(doublePrecision
-                    ? (Action<GroupedIndex2, ArrayView<uint>, int, int, int, double, double, double, uint>) DoubleKernel
-                    : SingleKernel);
-
-                kernel(lp, _deviceMemory.ToArrayView(), width, height, blockOffsetY * blockSizeY, startX, startY, scale, maxIterations);
+                if (doublePrecision)
+                {
+                    _gpu.Launch(DoubleKernel, lp, _deviceMemory.View, width, height, blockOffsetY * blockSizeY, startX, startY, scale, maxIterations);
+                }
+                else
+                {
+                    _gpu.Launch(SingleKernel, lp, _deviceMemory.View, width, height, blockOffsetY * blockSizeY, startX, startY, scale, maxIterations);
+                }
             }
 
             fixed (uint* ptr = iterations)
@@ -87,16 +88,14 @@ namespace Mandelbrot
         }
 
         private static void SingleKernel(
-            GroupedIndex2 index,
             ArrayView<uint> iterations,
             int width, int height,
             int blockOffsetY,
             double startX, double startY, double scale,
             uint maxIterations)
         {
-
-            var i = index.ComputeGlobalIndex().Y + blockOffsetY;
-            var j = index.ComputeGlobalIndex().X;
+            var i = Group.IdxY + Grid.IdxY * Group.DimY + blockOffsetY;
+            var j = Group.IdxX + Grid.IdxX * Group.DimX;
 
             if (i < height && j < width)
             {
@@ -137,7 +136,6 @@ namespace Mandelbrot
         }
 
         private static void DoubleKernel(
-            GroupedIndex2 index,
             ArrayView<uint> iterations,
             int width, int height,
             int blockOffsetY,
@@ -145,8 +143,8 @@ namespace Mandelbrot
             uint maxIterations)
         {
 
-            var i = index.ComputeGlobalIndex().Y + blockOffsetY;
-            var j = index.ComputeGlobalIndex().X;
+            var i = Grid.IdxY * Group.DimY + Group.IdxY + blockOffsetY;
+            var j = Grid.IdxX * Group.DimX + Group.IdxX;
 
             if (i < height && j < width)
             {
