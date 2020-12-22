@@ -6,6 +6,7 @@ namespace Mandelbrot
         Managed,
         Sse2,
         Avx,
-        Cuda
+        Cuda,
+        OpenCl
     }
 }
