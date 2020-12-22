@@ -27,7 +27,8 @@ namespace Mandelbrot
                 BackEnd.Managed,
                 BackEnd.Sse2,
                 Avx.IsSupported ? BackEnd.Avx : (BackEnd?) null,
-                BackEnd.Cuda
+                ImplCuda.IsSupported ? BackEnd.Cuda : (BackEnd?) null,
+                ImplOpenCl.IsSupported ? BackEnd.OpenCl : (BackEnd?) null
             }.Where(e => e.HasValue).Select(e => e.Value).ToArray();
 
             _maxThreads = Environment.ProcessorCount;

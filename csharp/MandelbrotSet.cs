@@ -11,7 +11,8 @@ namespace Mandelbrot
         {
             _lock = new object();
             _cancel = new bool[1];
-            _cuda = new ImplCuda();
+            _cuda = ImplCuda.IsSupported ? new ImplCuda() : null;
+            _cl = ImplOpenCl.IsSupported ? new ImplOpenCl() : null;
             _exceptions = new List<Exception>();
 
             BackEnd = BackEnd.Managed;
@@ -63,7 +64,7 @@ namespace Mandelbrot
             {
                 if (_workerThreads != null) throw new InvalidOperationException("ComputeSet already executing");
 
-                _workerThreads = new Thread[BackEnd == BackEnd.Cuda ? 1 : Threads];
+                _workerThreads = new Thread[BackEnd == BackEnd.Cuda || BackEnd == BackEnd.OpenCl ? 1 : Threads];
 
                 for (int i = 0; i != _workerThreads.Length; ++i)
                 {
@@ -135,6 +136,10 @@ namespace Mandelbrot
                     case BackEnd.Cuda:
                         ComputeSetCuda();
                         break;
+
+                    case BackEnd.OpenCl:
+                        ComputeSetOpenCl();
+                        break;
                 }
             }
 
@@ -145,6 +150,11 @@ namespace Mandelbrot
                     _exceptions.Add(exception);
                 }
             }
+        }
+
+        private void ComputeSetOpenCl()
+        {
+            _cl.ComputeMandelbrotSet(Iterations, Width, Height, OffsetX, OffsetY, Zoom, MaxIterations, Precision == Precision.Double, ref _cancel[0]);
         }
 
         private void ComputeSetManaged(int startScanline, int increment)
@@ -179,6 +189,7 @@ namespace Mandelbrot
         private readonly object _lock;
         private readonly bool[] _cancel;
         private readonly ImplCuda _cuda;
+        private readonly ImplOpenCl _cl;
         private readonly List<Exception> _exceptions;
         private Thread[] _workerThreads;
         private int _threads;

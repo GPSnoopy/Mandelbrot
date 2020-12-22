@@ -35,7 +35,8 @@ namespace Mandelbrot
                 new ComboBoxItem(BackEndLabel.Get(BackEnd.Managed), BackEnd.Managed),
                 new ComboBoxItem(BackEndLabel.Get(BackEnd.Sse2), BackEnd.Sse2),
                 Avx.IsSupported ? new ComboBoxItem(BackEndLabel.Get(BackEnd.Avx), BackEnd.Avx) : null,
-                new ComboBoxItem(BackEndLabel.Get(BackEnd.Cuda), BackEnd.Cuda)
+                ImplCuda.IsSupported ? new ComboBoxItem(BackEndLabel.Get(BackEnd.Cuda), BackEnd.Cuda) : null,
+                ImplOpenCl.IsSupported ? new ComboBoxItem(BackEndLabel.Get(BackEnd.OpenCl), BackEnd.OpenCl) : null
             }.Where(e => e != null).ToArray();
 
             // ReSharper disable once CoVariantArrayConversion

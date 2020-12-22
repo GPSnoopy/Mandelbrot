@@ -19,6 +19,9 @@ namespace Mandelbrot
                 case BackEnd.Cuda:
                     return "CUDA";
 
+                case BackEnd.OpenCl:
+                    return "OpenCL";
+
                 default:
                     return "Unknown";
             }

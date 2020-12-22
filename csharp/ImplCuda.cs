@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using ILGPU;
 using ILGPU.Runtime;
 using ILGPU.Runtime.Cuda;
@@ -7,6 +8,8 @@ namespace Mandelbrot
 {
     internal sealed class ImplCuda : IDisposable
     {
+        public static bool IsSupported => CudaAccelerator.CudaAccelerators.Any();
+
         public ImplCuda()
         {
             _context = new Context();
