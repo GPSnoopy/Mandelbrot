@@ -13,7 +13,7 @@ namespace Mandelbrot
         public ImplOpenCl()
         {
             _context = new Context();
-            var id = CLAccelerator.AllCLAccelerators.First();
+            var id = CLAccelerator.CLAccelerators.First();
             _gpu = new CLAccelerator(_context, id);
             _doubleKernel = _gpu.LoadAutoGroupedStreamKernel<Index2, ArrayView<uint>, int, int, double, double, double, uint>(DoubleKernel);
             _singleKernel = _gpu.LoadAutoGroupedStreamKernel<Index2, ArrayView<uint>, int, int,float, float, float, uint>(SingleKernel);
