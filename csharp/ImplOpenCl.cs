@@ -6,6 +6,9 @@ using ILGPU.Runtime.OpenCL;
 
 namespace Mandelbrot
 {
+    // Experimental OpenCL implementation. In practice, should not exist.
+    // ImplCuda should in theory only need swapping CudaAccelerator for a CLAccelerator.
+    // But I cannot test this due to NVIDIA not supporting OpenCL 2.0. So keeping the PR as it is.
     internal sealed class ImplOpenCl : IDisposable
     {
         public static bool IsSupported => CLAccelerator.CLAccelerators.Any();
@@ -42,14 +45,14 @@ namespace Mandelbrot
             double startY = -1.0 / zoom + offsetY;
             double scale = 2 / (height * zoom);
 
-                if (doublePrecision)
-                {
-                    _doubleKernel(new Index2(width, height), _deviceMemory.View, width, height, startX, startY, scale, maxIterations);
-                }
-                else
-                {
-                    _singleKernel(new Index2(width, height), _deviceMemory.View, width, height, (float)startX, (float) startY, (float) scale, maxIterations);
-                }
+            if (doublePrecision)
+            {
+                _doubleKernel(new Index2(width, height), _deviceMemory.View, width, height, startX, startY, scale, maxIterations);
+            }
+            else
+            {
+                _singleKernel(new Index2(width, height), _deviceMemory.View, width, height, (float) startX, (float) startY, (float) scale, maxIterations);
+            }
 
             fixed (uint* ptr = iterations)
             {
