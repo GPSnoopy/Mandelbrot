@@ -10,7 +10,7 @@
 
   <ItemGroup>
     <PackageReference Include="ILGPU" Version="0.10.0-beta1" />
-    <PackageReference Include="System.Data.SqlClient" Version="4.8.2" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.8.6" />
     <PackageReference Include="System.Windows.Forms.DataVisualization" Version="1.0.0-prerelease.20110.1" />
   </ItemGroup>
 
